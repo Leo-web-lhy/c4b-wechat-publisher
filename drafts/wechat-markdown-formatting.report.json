@@ -1,0 +1,29 @@
+{
+  "ok": true,
+  "errors": [],
+  "warnings": [
+    {
+      "code": "W_TABLE",
+      "message": "正文使用表格",
+      "hint": "公众号窄屏表格易错位；能改成列表就改，必须保留时控制列数",
+      "loc": null
+    }
+  ],
+  "metrics": {
+    "title": "公众号排版一粘就散？四个断裂点与一套可复现的修法",
+    "titleChars": 24,
+    "digest": "样式被剥离、段落太长、标题被截断、发布没门禁——四个断裂点各自对应一个能验证的修法，最后附一条六步流水线。",
+    "digestChars": 53,
+    "cjk": 1337,
+    "latinWords": 60,
+    "totalUnits": 1397,
+    "headings": 7,
+    "blocks": 33,
+    "paragraphs": 23,
+    "longestParagraph": 70,
+    "readMinutes": 3,
+    "numberTokens": 1,
+    "numberDensity": 0.07
+  },
+  "checkedAt": "2026-11-21T11:48:13.652Z"
+}

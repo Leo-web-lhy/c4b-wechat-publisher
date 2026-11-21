@@ -1,0 +1,23 @@
+{
+  "title": "公众号排版一粘就散？四个断裂点与一套可复现的修法",
+  "digest": "样式被剥离、段落太长、标题被截断、发布没门禁——四个断裂点各自对应一个能验证的修法，最后附一条六步流水线。",
+  "author": "2023108610260",
+  "cover": "",
+  "source_url": "",
+  "date": "2026-11-21",
+  "stats": {
+    "title": "公众号排版一粘就散？四个断裂点与一套可复现的修法",
+    "titleChars": 24,
+    "digest": "样式被剥离、段落太长、标题被截断、发布没门禁——四个断裂点各自对应一个能验证的修法，最后附一条六步流水线。",
+    "digestChars": 53,
+    "cjk": 1337,
+    "latinWords": 60,
+    "totalUnits": 1397,
+    "headings": 7,
+    "blocks": 33,
+    "paragraphs": 23,
+    "longestParagraph": 70,
+    "readMinutes": 3
+  },
+  "generatedAt": "2026-11-21T11:48:13.647Z"
+}

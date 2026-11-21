@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>公众号排版一粘就散？四个断裂点与一套可复现的修法</title>
+<meta name="description" content="样式被剥离、段落太长、标题被截断、发布没门禁——四个断裂点各自对应一个能验证的修法，最后附一条六步流水线。" />
+<meta name="author" content="2023108610260" />
+</head>
+<body style="margin:0;padding:0;background:#fff;">
+<main style="max-width:677px;margin:0 auto;padding:24px 20px 60px 20px;">
+<article style="margin:0;">
+<h1 style="margin:0 0 8px 0;font-size:24px;line-height:1.4;font-weight:700;color:#111;">公众号排版一粘就散？四个断裂点与一套可复现的修法</h1>
+<p style="margin:0 0 26px 0;font-size:13px;color:#8b949e;">2023108610260</p>
+<section id="wechat-article" style="font-size:16px;line-height:1.85;color:#2b2b2b;letter-spacing:0.4px;word-break:break-word;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;">
+<p style="margin:0 0 18px 0;font-size:16px;line-height:1.85;color:#2b2b2b;text-align:justify;">你在本地写好 Markdown：标题层级清楚、代码块带底色、列表对齐。全选复制，粘进公众号后台，字号变回默认值，行距挤在一起，二级标题和正文长得一模一样。</p>
+<p style="margin:0 0 18px 0;font-size:16px;line-height:1.85;color:#2b2b2b;text-align:justify;">问题不在你写得不对，而在两道工序之间缺一个接口：从 Markdown 到渲染器，再从渲染器到公众号编辑器。这篇文章把这条链上的四个断裂点拆开，每个都给一个能验证的修法。</p>
+<h2 style="margin:34px 0 16px 0;padding-left:12px;border-left:4px solid #1f6feb;font-size:18px;font-weight:600;line-height:1.5;color:#111;">一、结论先行：公众号编辑器只吃内联样式</h2>
+<p style="margin:0 0 18px 0;font-size:16px;line-height:1.85;color:#2b2b2b;text-align:justify;">公众号后台的粘贴过滤会丢掉 <code style="font-family:Menlo,Consolas,monospace;font-size:13px;background:#f4f6f8;color:#c7254e;padding:2px 5px;border-radius:3px;">&lt;style&gt;</code> 块、<code style="font-family:Menlo,Consolas,monospace;font-size:13px;background:#f4f6f8;color:#c7254e;padding:2px 5px;border-radius:3px;">&lt;link&gt;</code> 外链样式表和标签上的 <code style="font-family:Menlo,Consolas,monospace;font-size:13px;background:#f4f6f8;color:#c7254e;padding:2px 5px;border-radius:3px;">class</code> 属性，只留下标签自身的 <code style="font-family:Menlo,Consolas,monospace;font-size:13px;background:#f4f6f8;color:#c7254e;padding:2px 5px;border-radius:3px;">style</code> 属性。换句话说，一份好看的 CSS 在这里没有落点。</p>
+<p style="margin:0 0 18px 0;font-size:16px;line-height:1.85;color:#2b2b2b;text-align:justify;">这解释了为什么很多排版工具最后都变成&quot;行内样式生成器&quot;：不是它们偷懒，是能穿过过滤层的通道只有那一根。</p>
+<h2 style="margin:34px 0 16px 0;padding-left:12px;border-left:4px solid #1f6feb;font-size:18px;font-weight:600;line-height:1.5;color:#111;">二、断裂点一：样式在粘贴那一步就被剥掉</h2>
+<p style="margin:0 0 18px 0;font-size:16px;line-height:1.85;color:#2b2b2b;text-align:justify;">依赖 class 的方案失效后，浏览器默认样式接管：h2 掉成和正文同字号的粗体，段落间距归零，列表缩进错位。你在本地看到的和读者看到的，是两份不同的文档。</p>
+<p style="margin:0 0 18px 0;font-size:16px;line-height:1.85;color:#2b2b2b;text-align:justify;">修法：渲染阶段直接把样式写进 <code style="font-family:Menlo,Consolas,monospace;font-size:13px;background:#f4f6f8;color:#c7254e;padding:2px 5px;border-radius:3px;">style</code> 属性，一个字都不留给外部样式表。代价是 HTML 体积变大——一千五百字左右的文章，行内样式版通常在几十 KB。</p>
+<p style="margin:0 0 18px 0;font-size:16px;line-height:1.85;color:#2b2b2b;text-align:justify;">换来的确定性是值得的：粘贴即所见，不再依赖读者的阅读器，也不再依赖编辑器版本。</p>
+<p style="margin:0 0 18px 0;font-size:16px;line-height:1.85;color:#2b2b2b;text-align:justify;">验证方式很机械：渲染完成后逐个检查块级标签是否带 <code style="font-family:Menlo,Consolas,monospace;font-size:13px;background:#f4f6f8;color:#c7254e;padding:2px 5px;border-radius:3px;">style</code>，缺一个就不算通过。人工肉眼比对不可靠，标签一多必然漏看。</p>
+<h2 style="margin:34px 0 16px 0;padding-left:12px;border-left:4px solid #1f6feb;font-size:18px;font-weight:600;line-height:1.5;color:#111;">三、断裂点二：段落没有长度上限</h2>
+<p style="margin:0 0 18px 0;font-size:16px;line-height:1.85;color:#2b2b2b;text-align:justify;">手机一屏大约五到七行，一行十八到二十二个汉字。一个三百字的段落就是十几行连续文字，读者看不到&quot;下一步往哪看&quot;，会直接划走。</p>
+<p style="margin:0 0 18px 0;font-size:16px;line-height:1.85;color:#2b2b2b;text-align:justify;">我给自己定的阈值是单段不超过一百八十字，超了就拆。这不是美学要求，而是给读者一个规律的重启点：每六到八行遇到一次换行、一个判断、一个动作。</p>
+<p style="margin:0 0 18px 0;font-size:16px;line-height:1.85;color:#2b2b2b;text-align:justify;">拆段有三种具体手法：</p>
+<ul style="margin:0 0 18px 0;padding-left:22px;"><li style="margin:0 0 8px 0;font-size:16px;line-height:1.8;color:#2b2b2b;">一段只放一个判断，第二个判断另起一段</li><li style="margin:0 0 8px 0;font-size:16px;line-height:1.8;color:#2b2b2b;">数据单独成段，前后各留一句解释</li><li style="margin:0 0 8px 0;font-size:16px;line-height:1.8;color:#2b2b2b;">转折词之前断开，&quot;但是&quot;&quot;所以&quot;&quot;反过来&quot;都是天然的分段点</li></ul>
+<p style="margin:0 0 18px 0;font-size:16px;line-height:1.85;color:#2b2b2b;text-align:justify;">拆完回头看，段落变短了，信息并没有少，反而更容易被复述——读者能记住的是判断，不是句子。</p>
+<h2 style="margin:34px 0 16px 0;padding-left:12px;border-left:4px solid #1f6feb;font-size:18px;font-weight:600;line-height:1.5;color:#111;">四、断裂点三：标题和摘要在列表页被截断</h2>
+<p style="margin:0 0 18px 0;font-size:16px;line-height:1.85;color:#2b2b2b;text-align:justify;">读者第一次看到你的文章，几乎都不是在正文页：公众号列表、转发卡片、搜索结果，显示的都是一行标题加一段摘要。</p>
+<p style="margin:0 0 18px 0;font-size:16px;line-height:1.85;color:#2b2b2b;text-align:justify;">标题的可用空间比大多数人以为的窄。我的做法是把标题压到六十四字以内（实际写作目标十八到二十四个字），并把&quot;这篇讲什么对象、有什么用&quot;塞进前十个字。</p>
+<p style="margin:0 0 18px 0;font-size:16px;line-height:1.85;color:#2b2b2b;text-align:justify;">摘要在卡片上只露一两行，所以第一句就得是结论，不要用&quot;最近有很多人问我&quot;开场。</p>
+<p style="margin:0 0 18px 0;font-size:16px;line-height:1.85;color:#2b2b2b;text-align:justify;">一个自检动作：把标题单独念出来，如果听不出对象和收益，说明它只在全文语境里成立，换个场合就不成立。</p>
+<h2 style="margin:34px 0 16px 0;padding-left:12px;border-left:4px solid #1f6feb;font-size:18px;font-weight:600;line-height:1.5;color:#111;">五、断裂点四：发布前没有门禁</h2>
+<p style="margin:0 0 18px 0;font-size:16px;line-height:1.85;color:#2b2b2b;text-align:justify;">大多数翻车不是写不好，是没人检查。人对自己写的字有免疫力——读了十遍也看不出那个错字，更看不出超长段落和被剥掉的样式。</p>
+<p style="margin:0 0 18px 0;font-size:16px;line-height:1.85;color:#2b2b2b;text-align:justify;">我把检查拆成两级，只有硬错误会阻断发布：</p>
+<table style="width:100%;border-collapse:collapse;margin:0 0 18px 0;font-size:14px;"><thead><tr><th style="padding:8px 10px;border:1px solid #d0d7de;background:#f6f8fa;font-weight:600;text-align:left;color:#111;">级别</th><th style="padding:8px 10px;border:1px solid #d0d7de;background:#f6f8fa;font-weight:600;text-align:left;color:#111;">检查项</th><th style="padding:8px 10px;border:1px solid #d0d7de;background:#f6f8fa;font-weight:600;text-align:left;color:#111;">处理</th></tr></thead><tbody><tr><td style="padding:8px 10px;border:1px solid #d0d7de;color:#2b2b2b;">硬错误</td><td style="padding:8px 10px;border:1px solid #d0d7de;color:#2b2b2b;">残留脚本、外链样式、内联样式表、class 属性</td><td style="padding:8px 10px;border:1px solid #d0d7de;color:#2b2b2b;">阻断</td></tr><tr><td style="padding:8px 10px;border:1px solid #d0d7de;color:#2b2b2b;">硬错误</td><td style="padding:8px 10px;border:1px solid #d0d7de;color:#2b2b2b;">正文过短（不足六百汉字）、没有小节</td><td style="padding:8px 10px;border:1px solid #d0d7de;color:#2b2b2b;">阻断</td></tr><tr><td style="padding:8px 10px;border:1px solid #d0d7de;color:#2b2b2b;">硬错误</td><td style="padding:8px 10px;border:1px solid #d0d7de;color:#2b2b2b;">标题或摘要超出长度上限</td><td style="padding:8px 10px;border:1px solid #d0d7de;color:#2b2b2b;">阻断</td></tr><tr><td style="padding:8px 10px;border:1px solid #d0d7de;color:#2b2b2b;">警告</td><td style="padding:8px 10px;border:1px solid #d0d7de;color:#2b2b2b;">单段超过一百八十字</td><td style="padding:8px 10px;border:1px solid #d0d7de;color:#2b2b2b;">人工判断</td></tr><tr><td style="padding:8px 10px;border:1px solid #d0d7de;color:#2b2b2b;">警告</td><td style="padding:8px 10px;border:1px solid #d0d7de;color:#2b2b2b;">承诺性表述、诱导分享的表述</td><td style="padding:8px 10px;border:1px solid #d0d7de;color:#2b2b2b;">人工判断</td></tr></tbody></table>
+<p style="margin:0 0 18px 0;font-size:16px;line-height:1.85;color:#2b2b2b;text-align:justify;">分成两级的理由：承诺性表述有时是引用别人的话，机器不该替你做决定；但样式残留没有歧义，该拦就拦。</p>
+<h2 style="margin:34px 0 16px 0;padding-left:12px;border-left:4px solid #1f6feb;font-size:18px;font-weight:600;line-height:1.5;color:#111;">六、一条可复现的流水线</h2>
+<p style="margin:0 0 18px 0;font-size:16px;line-height:1.85;color:#2b2b2b;text-align:justify;">把上面四件事串起来，就是六步：选题单、正文、渲染、自检、发布、复盘。每一步都落盘，失败能单独重跑，不用从头再来。</p>
+<pre data-lang="bash" style="margin:0 0 18px 0;padding:14px 16px;background:#0d1117;border-radius:6px;overflow-x:auto;font-size:13px;line-height:1.7;color:#e6edf3;font-family:Menlo,Consolas,"Courier New",monospace;white-space:pre;"><code style="font-family:inherit;color:inherit;background:none;padding:0;">node cli.mjs new    wechat-markdown-formatting
+node cli.mjs render drafts/wechat-markdown-formatting.md
+node cli.mjs check  drafts/wechat-markdown-formatting.html
+node cli.mjs static drafts/wechat-markdown-formatting.html --out docs
+node cli.mjs track  data/channels.csv</code></pre>
+<p style="margin:0 0 18px 0;font-size:16px;line-height:1.85;color:#2b2b2b;text-align:justify;">前四条命令就是这篇文章自己的生产流程。<code style="font-family:Menlo,Consolas,monospace;font-size:13px;background:#f4f6f8;color:#c7254e;padding:2px 5px;border-radius:3px;">check</code> 不通过时退出码非零，可以直接接在发布脚本前面当门禁。</p>
+<p style="margin:0 0 18px 0;font-size:16px;line-height:1.85;color:#2b2b2b;text-align:justify;">发布环节留了两种出口：推公众号草稿箱（需要公众号的 AppID 与 AppSecret），或者生成一个静态站挂到公网。后者适合还没拿到接口权限的人，链接可以直接发给读者。</p>
+<h2 style="margin:34px 0 16px 0;padding-left:12px;border-left:4px solid #1f6feb;font-size:18px;font-weight:600;line-height:1.5;color:#111;">七、结尾</h2>
+<p style="margin:0 0 18px 0;font-size:16px;line-height:1.85;color:#2b2b2b;text-align:justify;">排版不是审美问题，是接口问题。样式写进标签、段落切到能一口气读完、标题前十字说清对象和收益、发布前有一道会拦人的门禁——这四件事做完，读者才有机会看到第二屏。</p>
+</section>
+</article>
+</main>
+</body>
+</html>

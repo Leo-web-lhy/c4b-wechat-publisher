@@ -11,7 +11,7 @@
 | 文章公网链接 | https://leo-web-lhy.github.io/c4b-wechat-publisher/wechat-markdown-formatting.html |
 | 站点首页（文章索引） | https://leo-web-lhy.github.io/c4b-wechat-publisher/ |
 | 公开仓库 | https://github.com/Leo-web-lhy/c4b-wechat-publisher |
-| 仓库提交 | `655acc3`（19 个文件，逐字节与本地一致） |
+| 仓库提交 | 26 个文件逐字节与本地一致（`MISSING_ON_REMOTE=0`、`BYTE_MISMATCH=0`、`REMOTE_BLOBS=26`），提交记录见仓库 Commits |
 | 链接校验 | 2026-11-21 匿名 HTTP GET 返回 `200` + `text/html`，正文约 12.7 KB |
 
 链接不是"应该能通"，是走过一遍的：仓库建好后开启 GitHub Pages（`/docs` 分支目录），前 3 次轮询仍是 404，第 4 次才返回 200——静态托管有构建延迟，所以脚本里写的是轮询而不是 sleep 一次就宣布成功。
